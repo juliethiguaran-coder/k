@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STEAM Kids Bot — Pensamiento Matemático</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#132238;
+  --surface:#1b3353;
+  --card:#22456f;
+  --teal:#2dd4bf;
+  --blue:#60a5fa;
+  --purple:#c084fc;
+  --pink:#f472b6;
+  --gold:#fbbf24;
+  --green:#4ade80;
+  --orange:#fb923c;
+  --red:#f87171;
+  --white:#f8fbff;
+  --muted:#c5d3ea;
+  --cell:74px;
+  --shadow:0 18px 42px rgba(0,0,0,.30);
+}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,#102033 0%, #17304f 58%, #1c3f64 100%);
+  color:var(--white);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(96,165,250,.12), transparent 25%),
+    radial-gradient(circle at 82% 15%, rgba(244,114,182,.10), transparent 22%),
+    radial-gradient(circle at 50% 75%, rgba(45,212,191,.10), transparent 30%);
+}
+.screen{display:none;position:relative;z-index:1}
+.screen.active{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px}
+.btn{padding:12px 28px;border:none;border-radius:999px;font-weight:900;font-size:15px;cursor:pointer;transition:.25s ease;font-family:'Nunito',sans-serif}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:linear-gradient(135deg,var(--teal),var(--blue));color:white;box-shadow:0 10px 22px rgba(96,165,250,.22)}
+.btn-secondary{background:rgba(255,255,255,.08);color:var(--white);border:1px solid rgba(255,255,255,.10)}
+.btn-danger{background:rgba(248,113,113,.15);color:#fecaca;border:1px solid rgba(248,113,113,.25)}
+
+/* INTRO */
+#intro{justify-content:center;text-align:center;gap:18px;padding:30px 18px}
+.hero{font-size:96px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 12px 26px rgba(0,0,0,.3))}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.logo{font-family:'Fredoka One',cursive;font-size:58px;line-height:1;background:linear-gradient(135deg,var(--gold),var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{max-width:820px;font-size:18px;color:var(--muted);line-height:1.75}
+.note{font-size:13px;color:var(--muted)}
+.cards{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;max-width:1100px;margin-top:8px}
+.card{
+  width:300px;background:rgba(27,51,83,.95);border:2px solid transparent;border-radius:26px;padding:24px;cursor:pointer;
+  transition:.28s ease;box-shadow:var(--shadow);position:relative;overflow:hidden;text-align:left;
+}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--c1),var(--c2));opacity:.12}
+.card:hover{transform:translateY(-6px);border-color:var(--c1)}
+.card>*{position:relative;z-index:1}
+.card-icon{font-size:50px;margin-bottom:8px}
+.card-title{font-family:'Fredoka One',cursive;font-size:24px}
+.card-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-top:8px}
+.card-badge{display:inline-block;margin-top:12px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;font-weight:900}
+.world1{--c1:#fbbf24;--c2:#2dd4bf}.world2{--c1:#60a5fa;--c2:#c084fc}.world3{--c1:#fb923c;--c2:#f472b6}
+
+/* LESSON */
+#lesson{justify-content:center;gap:18px;text-align:center;padding:28px 18px}
+.lesson-icon{font-size:72px;animation:float 2.8s ease-in-out infinite}
+.lesson-title{font-family:'Fredoka One',cursive;font-size:36px;color:var(--teal)}
+.lesson-box{width:min(920px,100%);background:rgba(27,51,83,.96);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:28px;box-shadow:var(--shadow);text-align:left}
+.lesson-box p{line-height:1.85;color:#deebff}
+.lesson-highlight{margin:18px 0;padding:15px 18px;border-left:4px solid var(--gold);background:rgba(255,255,255,.05);border-radius:14px}
+.lesson-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:16px}
+.lesson-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px}
+.lesson-card h4{margin-bottom:6px;color:var(--gold)}
+.lesson-card p{font-size:14px;color:var(--muted)}
+
+/* GAME */
+#game{align-items:stretch;width:min(1180px,100%);margin:0 auto;padding:18px}
+.game-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.level-title{font-family:'Fredoka One',cursive;font-size:24px;color:var(--gold);margin-bottom:8px}
+.progress-wrap{width:230px;height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.progress-bar{height:100%;width:10%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .35s ease}
+.hud{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.badge{background:rgba(27,51,83,.96);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:9px 16px;font-weight:900;box-shadow:var(--shadow)}
+.game-body{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+.grid-wrap{background:rgba(27,51,83,.96);border-radius:24px;padding:16px;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow)}
+#grid{display:grid;grid-template-columns:repeat(5,var(--cell));grid-template-rows:repeat(5,var(--cell));gap:5px}
+.cell{
+  width:var(--cell);height:var(--cell);border-radius:14px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;
+  font-size:33px;position:relative;border:1px solid rgba(255,255,255,.06);transition:.2s ease;
+}
+.cell.wall{background:rgba(13,24,40,.85)}
+.cell.target{box-shadow:inset 0 0 0 2px rgba(251,191,36,.32)}
+.cell.active{background:rgba(96,165,250,.22);animation:pulseCell .5s ease-in-out alternate infinite}
+.cell.trail{background:rgba(45,212,191,.10)}
+@keyframes pulseCell{from{background:rgba(96,165,250,.18)}to{background:rgba(96,165,250,.33)}}
+.tile-label{position:absolute;bottom:4px;right:6px;font-size:10px;font-weight:900;color:#0f172a;background:rgba(255,255,255,.78);padding:1px 5px;border-radius:6px}
+.panel{background:rgba(27,51,83,.96);border-radius:24px;padding:18px;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow)}
+.mission-title{font-family:'Fredoka One',cursive;color:var(--teal);font-size:18px;margin-bottom:8px}
+.mission-text{color:#e5f0ff;line-height:1.75;font-size:15px}
+.hint{margin-top:12px;background:rgba(96,165,250,.10);border-left:4px solid var(--blue);border-radius:12px;padding:12px 14px;color:#bfdbfe;font-size:14px;line-height:1.7}
+.side-layout{display:flex;flex-direction:column;gap:14px}
+.program-label{font-family:'Fredoka One',cursive;font-size:17px;color:var(--muted);margin-bottom:8px}
+.slots-row{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;margin-bottom:12px}
+.slot{
+  width:50px;height:50px;border-radius:12px;background:rgba(255,255,255,.05);border:2px dashed rgba(255,255,255,.16);
+  display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;position:relative;transition:.2s ease
+}
+.slot.filled{border-style:solid;border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.08)}
+.slot.filled:hover{background:rgba(248,113,113,.15);border-color:var(--red)}
+.slot.executing{background:rgba(45,212,191,.26);border-color:var(--teal)}
+.palette{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.dir-btn{
+  width:48px;height:48px;border:none;border-radius:12px;font-size:24px;cursor:pointer;transition:.18s ease;font-weight:900
+}
+.dir-btn:hover{transform:translateY(-2px) scale(1.03)}
+.dir-btn.right{background:#4ade80;color:#082b18}.dir-btn.left{background:#fbbf24;color:#4b2f00}.dir-btn.up{background:#60a5fa;color:#08274f}.dir-btn.down{background:#f87171;color:#4c0b0b}
+.target-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.target-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);font-weight:800;font-size:13px}
+.target-chip.done{background:rgba(74,222,128,.18);color:#bbf7d0;border:1px solid rgba(74,222,128,.3)}
+.target-chip.pending{color:#e5eefc}
+.teacher-box{background:rgba(255,255,255,.05);border-radius:16px;padding:14px;border:1px solid rgba(255,255,255,.06)}
+.teacher-box h4{color:var(--pink);margin-bottom:6px}
+.teacher-box p{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* FEEDBACK */
+.feedback{position:fixed;inset:0;background:rgba(10,15,28,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:99}
+.feedback.show{display:flex}
+.feedback-card{width:min(520px,100%);background:#172c49;border:2px solid rgba(255,255,255,.08);border-radius:26px;padding:30px;text-align:center;box-shadow:0 26px 70px rgba(0,0,0,.45)}
+.fb-icon{font-size:64px;margin-bottom:10px}.fb-title{font-family:'Fredoka One',cursive;font-size:32px;margin-bottom:8px}.fb-msg{color:var(--muted);line-height:1.8;margin-bottom:18px}.fb-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.confetti-piece{position:fixed;width:10px;height:10px;border-radius:2px;animation:fall 1.8s ease-in forwards;pointer-events:none;z-index:120}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+.floaty{position:fixed;font-weight:900;color:rgba(255,255,255,.12);animation:mathFloat 16s linear infinite;pointer-events:none;z-index:0;user-select:none}
+@keyframes mathFloat{from{transform:translateY(110vh) rotate(0deg);opacity:0}15%{opacity:1}85%{opacity:1}to{transform:translateY(-15vh) rotate(360deg);opacity:0}}
+@media(max-width:980px){.game-body{grid-template-columns:1fr}.grid-wrap{margin:0 auto}.logo{font-size:48px}.lesson-title{font-size:32px}}
+@media(max-width:620px){:root{--cell:60px}.card{width:100%}.hero{font-size:78px}.logo{font-size:40px}}
+</style>
+</head>
+<body>
+
+<section id="intro" class="screen active">
+  <div class="hero">🤖🌈🔢</div>
+  <div class="logo">STEAM Kids Bot</div>
+  <p class="tagline">Plantilla didáctica inspirada en la lógica de AlgoBot para que estudiantes de Licenciatura en Educación Infantil creen experiencias de pensamiento matemático con enfoque STEAM: secuencias, conteo, formas, colores, exploración y resolución de retos.</p>
+  <p class="note">Elige un mundo y descubre cómo convertir una idea pedagógica en una aplicación interactiva para Primera Infancia.</p>
+
+  <div class="cards">
+    <article class="card world1" onclick="startWorld(1)">
+      <div class="card-icon">🍎🔢</div>
+      <div class="card-title" style="color:#fbbf24">Mundo 1</div>
+      <div class="card-desc">Conteo y secuencias. El robot recolecta objetos y sigue rutas simples para fortalecer cardinalidad y orden.</div>
+      <div class="card-badge" style="color:#fbbf24">MATEMÁTICAS + TECNOLOGÍA</div>
+    </article>
+    <article class="card world2" onclick="startWorld(2)">
+      <div class="card-icon">🔷🟡🔺</div>
+      <div class="card-title" style="color:#60a5fa">Mundo 2</div>
+      <div class="card-desc">Patrones y formas. El robot sigue secuencias visuales de colores y figuras, integrando arte y lógica.</div>
+      <div class="card-badge" style="color:#60a5fa">ARTE + MATEMÁTICAS</div>
+    </article>
+    <article class="card world3" onclick="startWorld(3)">
+      <div class="card-icon">🧱🏗️⭐</div>
+      <div class="card-title" style="color:#fb923c">Mundo 3</div>
+      <div class="card-desc">Clasificación y construcción. El robot identifica elementos, selecciona objetivos y llega a una meta.</div>
+      <div class="card-badge" style="color:#fb923c">INGENIERÍA + CIENCIA</div>
+    </article>
+  </div>
+  <p class="note">Referencia estructural tomada del estilo de AlgoBot: mundos, lección previa, tablero, programación por flechas y retroalimentación. fileciteturn2file0</p>
+</section>
+
+<section id="lesson" class="screen">
+  <div class="lesson-icon" id="lessonIcon">🍎</div>
+  <div class="lesson-title" id="lessonTitle">Lección</div>
+  <div class="lesson-box">
+    <p id="lessonText"></p>
+    <div class="lesson-highlight" id="lessonHighlight"></div>
+    <div class="lesson-grid" id="lessonGrid"></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+    <button class="btn btn-primary" onclick="startGame()">¡Comenzar reto! →</button>
+    <button class="btn btn-secondary" onclick="goHome()">Volver</button>
+  </div>
+</section>
+
+<section id="game" class="screen">
+  <div class="game-header">
+    <div>
+      <div class="level-title" id="levelLabel">Nivel 1</div>
+      <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+    <div class="hud">
+      <div class="badge">⭐ <span id="scoreDisplay">0</span> pts</div>
+      <div class="badge" id="livesDisplay">❤️❤️❤️</div>
+      <button class="btn btn-secondary" onclick="goHome()">🏠 Inicio</button>
+    </div>
+  </div>
+
+  <div class="game-body">
+    <div class="grid-wrap"><div id="grid"></div></div>
+
+    <div class="side-layout">
+      <div class="panel">
+        <div class="mission-title">🎯 Misión</div>
+        <div class="mission-text" id="missionText"></div>
+        <div class="hint" id="hintText"></div>
+        <div class="target-row" id="targetRow"></div>
+      </div>
+
+      <div class="panel">
+        <div class="program-label">📝 Mi ruta del robot</div>
+        <div class="slots-row" id="slotsRow"></div>
+        <div class="palette">
+          <button class="dir-btn up" onclick="addMove('⬆️','up')">⬆️</button>
+          <button class="dir-btn left" onclick="addMove('⬅️','left')">⬅️</button>
+          <button class="dir-btn right" onclick="addMove('➡️','right')">➡️</button>
+          <button class="dir-btn down" onclick="addMove('⬇️','down')">⬇️</button>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="runProgram()">▶ Ejecutar</button>
+          <button class="btn btn-danger" onclick="clearProgram()">✕ Limpiar</button>
+        </div>
+      </div>
+
+      <div class="teacher-box">
+        <h4>👩‍🏫 Clave STEAM</h4>
+        <p id="teacherText">La actividad conecta pensamiento matemático con exploración, juego, secuencias, observación y toma de decisiones.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="feedback" id="feedback">
+  <div class="feedback-card">
+    <div class="fb-icon" id="fbIcon">🎉</div>
+    <div class="fb-title" id="fbTitle">¡Muy bien!</div>
+    <div class="fb-msg" id="fbMsg"></div>
+    <div class="fb-actions">
+      <button class="btn btn-primary" id="nextBtn" onclick="nextLevel()">Siguiente nivel</button>
+      <button class="btn btn-secondary" onclick="retryLevel()">Reintentar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MAX_LIVES = 3;
+const MAX_SLOTS = 10;
+
+const WORLDS = {
+  1:{
+    name:'Conteo y secuencias',
+    lesson:{
+      icon:'🍎',
+      title:'Conteo con rutas y secuencias',
+      text:'En Primera Infancia, el pensamiento matemático se fortalece cuando el niño cuenta, ordena y relaciona acciones con resultados. En este mundo el robot sigue secuencias simples y recolecta cantidades pequeñas.',
+      highlight:'STEAM aquí significa aprender matemáticas con juego, exploración, tecnología y pequeñas decisiones espaciales.',
+      cards:[
+        {title:'S de Science',desc:'Observar objetos, posiciones y recorridos.'},
+        {title:'T de Technology',desc:'El robot y el tablero digital median el aprendizaje.'},
+        {title:'E de Engineering',desc:'Planear una ruta antes de ejecutarla.'},
+        {title:'A de Art',desc:'Usar color e íconos para hacer el reto significativo.'},
+        {title:'M de Math',desc:'Contar, ordenar y asociar cantidad con recorrido.'}
+      ]
+    },
+    levels:[
+      { bot:[0,0], goal:[0,4], walls:[], items:[{r:0,c:2,e:'🍎',name:'manzana'},{r:0,c:3,e:'🍎',name:'manzana'}], targets:['🍎','🍎'], mission:'Lleva el robot hasta la estrella y recoge 2 manzanas en el camino.', hint:'Observa la fila superior. Debes pasar por las dos manzanas antes de llegar a la meta.', teacher:'Permite trabajar conteo hasta 2, direccionalidad y correspondencia uno a uno.' },
+      { bot:[0,0], goal:[2,4], walls:[[1,2]], items:[{r:0,c:1,e:'🧸',name:'oso'},{r:2,c:2,e:'🧸',name:'oso'},{r:2,c:3,e:'🧸',name:'oso'}], targets:['🧸','🧸','🧸'], mission:'Recoge 3 ositos y luego llega a la estrella.', hint:'Hay un bloque en el centro. Planea un rodeo y visita los tres ositos.', teacher:'Integra conteo de 3 objetos, noción de obstáculo y anticipación de la ruta.' },
+      { bot:[4,0], goal:[0,4], walls:[[3,1],[2,1],[1,3]], items:[{r:4,c:2,e:'🌼',name:'flor'},{r:2,c:3,e:'🌼',name:'flor'}], targets:['🌼','🌼'], mission:'Sube por el jardín, recoge 2 flores y llega a la estrella.', hint:'No vayas directo. Sube, avanza y evita los muros.', teacher:'Se refuerzan rutas ascendentes, conteo y lectura espacial del tablero.' }
+    ]
+  },
+  2:{
+    name:'Patrones y formas',
+    lesson:{
+      icon:'🔷',
+      title:'Patrones visuales con figuras y colores',
+      text:'Reconocer patrones es una base del pensamiento matemático temprano. Aquí el robot debe visitar figuras en un orden determinado.',
+      highlight:'La secuencia visual favorece memoria, anticipación, observación y lenguaje matemático inicial.',
+      cards:[
+        {title:'Patrón',desc:'Un orden que se repite o se sigue con intención.'},
+        {title:'Forma',desc:'Triángulo, cuadrado y círculo como referentes visuales.'},
+        {title:'Color',desc:'Ayuda a discriminar y asociar elementos.'},
+        {title:'Ruta',desc:'El estudiante programa el recorrido del robot.'},
+        {title:'Expresión',desc:'Puede verbalizar: primero, después, al final.'}
+      ]
+    },
+    levels:[
+      { bot:[4,0], goal:[4,4], walls:[], items:[{r:2,c:0,e:'🔵',name:'círculo azul'},{r:2,c:2,e:'🟨',name:'cuadrado amarillo'},{r:2,c:4,e:'🔺',name:'triángulo'}], targets:['🔵','🟨','🔺'], mission:'Sigue el patrón: círculo azul → cuadrado amarillo → triángulo → estrella.', hint:'Tu ruta debe tocar las figuras en ese orden exacto.', teacher:'Ideal para seriación simple, secuencia visual y lenguaje ordinal.' },
+      { bot:[0,0], goal:[4,4], walls:[[1,1],[1,2],[3,3]], items:[{r:0,c:3,e:'🔺',name:'triángulo'},{r:2,c:3,e:'🔵',name:'círculo azul'},{r:4,c:2,e:'🟨',name:'cuadrado amarillo'}], targets:['🔺','🔵','🟨'], mission:'Visita las figuras según el patrón indicado y luego llega a la meta.', hint:'Hay obstáculos. Sigue el orden correcto sin saltarte ninguna figura.', teacher:'Favorece memoria secuencial, resolución de problemas y discriminación visual.' },
+      { bot:[2,0], goal:[0,4], walls:[[1,1],[2,2],[3,1]], items:[{r:4,c:0,e:'🟨',name:'cuadrado amarillo'},{r:4,c:3,e:'🔺',name:'triángulo'},{r:1,c:4,e:'🔵',name:'círculo azul'}], targets:['🟨','🔺','🔵'], mission:'Completa el patrón de formas y colores antes de llegar a la estrella.', hint:'Piensa el recorrido completo antes de presionar ejecutar.', teacher:'La actividad conecta patrón, forma, color y planificación motriz-cognitiva.' }
+    ]
+  },
+  3:{
+    name:'Clasificación y construcción',
+    lesson:{
+      icon:'🧱',
+      title:'Clasificar, seleccionar y construir una meta',
+      text:'Clasificar es reconocer semejanzas y diferencias. En este mundo el robot debe recoger solo ciertos elementos y construir un camino simbólico hacia la meta.',
+      highlight:'Las decisiones de qué recoger y qué ignorar apoyan nociones de atributo, criterio y selección.',
+      cards:[
+        {title:'Clasificar',desc:'Elegir según una característica.'},
+        {title:'Atributo',desc:'Color, forma o tipo de objeto.'},
+        {title:'Construir',desc:'Pensar una ruta para cumplir un objetivo.'},
+        {title:'Seleccionar',desc:'Tomar solo lo que la misión pide.'},
+        {title:'Reflexionar',desc:'Explicar por qué un objeto sí o no pertenece.'}
+      ]
+    },
+    levels:[
+      { bot:[0,0], goal:[4,4], walls:[[1,2],[2,2],[3,2]], items:[{r:0,c:2,e:'🟠',name:'círculo naranja'},{r:2,c:0,e:'🔶',name:'rombo naranja'},{r:4,c:1,e:'🔵',name:'círculo azul'}], targets:['🟠','🔶'], mission:'Recoge solo los objetos naranjas y luego llega a la estrella.', hint:'Hay un objeto azul que no necesitas. Elige con criterio.', teacher:'Introduce clasificación por color y toma de decisiones.' },
+      { bot:[4,0], goal:[0,4], walls:[[3,1],[2,1],[1,1]], items:[{r:4,c:2,e:'🔺',name:'triángulo'},{r:2,c:4,e:'🔺',name:'triángulo'},{r:0,c:2,e:'🔵',name:'círculo azul'}], targets:['🔺','🔺'], mission:'Recoge solamente los triángulos y alcanza la estrella.', hint:'No todo objeto del tablero pertenece a la misión.', teacher:'Trabaja clasificación por forma y control inhibitorio.' },
+      { bot:[2,0], goal:[2,4], walls:[[1,2],[3,2]], items:[{r:0,c:1,e:'🟨',name:'cuadrado amarillo'},{r:4,c:1,e:'🟨',name:'cuadrado amarillo'},{r:2,c:2,e:'🟩',name:'cuadrado verde'}], targets:['🟨','🟨'], mission:'Recoge los dos cuadrados amarillos y deja el cuadrado verde.', hint:'Sube por un lado, baja por el otro y vuelve al centro para llegar a la meta.', teacher:'Se fortalece clasificación por atributo doble: forma y color.' }
+    ]
+  }
+};
+
+let currentWorld = 1;
+let currentLevel = 0;
+let score = 0;
+let lives = MAX_LIVES;
+let program = [];
+let botPos = [];
+let goalPos = [];
+let running = false;
+let levelData = null;
+let collected = [];
+
+function $(id){ return document.getElementById(id); }
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
+function goHome(){ if(running) return; hideFeedback(); show('intro'); }
+
+function startWorld(w){
+  currentWorld = w; currentLevel = 0; score = 0; lives = MAX_LIVES; program = []; collected = [];
+  const lesson = WORLDS[w].lesson;
+  $('lessonIcon').textContent = lesson.icon;
+  $('lessonTitle').textContent = lesson.title;
+  $('lessonText').textContent = lesson.text;
+  $('lessonHighlight').textContent = lesson.highlight;
+  $('lessonGrid').innerHTML = lesson.cards.map(c=>`<div class="lesson-card"><h4>${c.title}</h4><p>${c.desc}</p></div>`).join('');
+  show('lesson');
+}
+
+function startGame(){ show('game'); loadLevel(); }
+
+function loadLevel(){
+  const world = WORLDS[currentWorld];
+  levelData = JSON.parse(JSON.stringify(world.levels[currentLevel]));
+  program = [];
+  collected = [];
+  botPos = [...levelData.bot];
+  goalPos = [...levelData.goal];
+  $('levelLabel').textContent = `${world.name} — Nivel ${currentLevel + 1}/${world.levels.length}`;
+  $('progressBar').style.width = `${((currentLevel + 1) / world.levels.length) * 100}%`;
+  $('scoreDisplay').textContent = score;
+  renderLives();
+  $('missionText').textContent = levelData.mission;
+  $('hintText').textContent = levelData.hint;
+  $('teacherText').textContent = levelData.teacher;
+  renderTargets();
+  renderSlots();
+  buildGrid();
+}
+
+function renderLives(){ $('livesDisplay').textContent = '❤️'.repeat(lives) + '🖤'.repeat(Math.max(0, MAX_LIVES - lives)); }
+
+function renderTargets(){
+  $('targetRow').innerHTML = levelData.targets.map((t,idx)=>{
+    const done = collected[idx] === true;
+    return `<span class="target-chip ${done?'done':'pending'}">${t} ${done?'✔':''}</span>`;
+  }).join('');
+}
+
+function buildGrid(){
+  const grid = $('grid');
+  grid.innerHTML = '';
+  for(let r=0;r<5;r++){
+    for(let c=0;c<5;c++){
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.id = `cell-${r}-${c}`;
+      if(levelData.walls.some(w=>w[0]===r && w[1]===c)){
+        cell.classList.add('wall');
+        cell.textContent = '🧱';
+      } else if(r===goalPos[0] && c===goalPos[1]){
+        cell.textContent = '⭐';
+        cell.classList.add('target');
+      } else {
+        const item = levelData.items.find(i=>i.r===r && i.c===c);
+        if(item){ cell.textContent = item.e; }
+      }
+      if(r===botPos[0] && c===botPos[1]){ cell.textContent = '🤖'; cell.classList.add('active'); }
+      grid.appendChild(cell);
+    }
+  }
+}
+
+function getCell(r,c){ return document.getElementById(`cell-${r}-${c}`); }
+
+function addMove(emoji,dir){
+  if(running) return;
+  if(program.length >= MAX_SLOTS) return;
+  program.push({emoji,dir});
+  renderSlots();
+}
+
+function clearProgram(){ if(running) return; program = []; renderSlots(); }
+
+function renderSlots(){
+  $('slotsRow').innerHTML = '';
+  for(let i=0;i<MAX_SLOTS;i++){
+    const slot = document.createElement('div');
+    slot.className = 'slot' + (program[i] ? ' filled' : '');
+    slot.id = `slot-${i}`;
+    if(program[i]){
+      slot.textContent = program[i].emoji;
+      slot.title = 'Clic para borrar';
+      slot.onclick = ()=>removeMove(i);
+    }
+    $('slotsRow').appendChild(slot);
+  }
+}
+
+function removeMove(i){ if(running) return; program.splice(i,1); renderSlots(); }
+
+async function runProgram(){
+  if(running) return;
+  running = true;
+  buildGrid();
+  collected = [];
+  renderTargets();
+
+  for(let i=0;i<program.length;i++){
+    highlightSlot(i);
+    const ok = await moveBot(program[i].dir);
+    if(!ok){
+      running = false;
+      loseLife('💥 ¡Ups!', 'El robot chocó con un muro o salió del tablero. Revisa tu ruta.');
+      return;
+    }
+    if(checkWin()){
+      running = false;
+      return;
+    }
+    await sleep(320);
+  }
+
+  running = false;
+  if(!checkWin()) loseLife('🤔 Aún no', 'La ruta terminó, pero todavía faltan objetos o no has llegado a la estrella.');
+}
+
+async function moveBot(dir){
+  let [r,c] = botPos;
+  if(dir==='up') r--;
+  else if(dir==='down') r++;
+  else if(dir==='left') c--;
+  else if(dir==='right') c++;
+
+  if(r<0 || r>=5 || c<0 || c>=5) return false;
+  if(levelData.walls.some(w=>w[0]===r && w[1]===c)) return false;
+
+  const old = getCell(botPos[0], botPos[1]);
+  if(old){
+    old.classList.remove('active');
+    old.classList.add('trail');
+    setTimeout(()=>old.classList.remove('trail'), 700);
+    if(botPos[0]===goalPos[0] && botPos[1]===goalPos[1]) old.textContent = '⭐';
+    else {
+      const oldItem = levelData.items.find(i=>i.r===botPos[0] && i.c===botPos[1]);
+      old.textContent = oldItem ? oldItem.e : '';
+    }
+  }
+
+  botPos = [r,c];
+  const item = levelData.items.find(i=>i.r===r && i.c===c);
+  if(item){
+    const pendingIdx = levelData.targets.findIndex((t,idx)=>t===item.e && collected[idx]!==true);
+    if(pendingIdx !== -1){
+      collected[pendingIdx] = true;
+      levelData.items = levelData.items.filter(i=>!(i.r===r && i.c===c));
+      renderTargets();
+    }
+  }
+
+  const cell = getCell(r,c);
+  if(cell){ cell.textContent = '🤖'; cell.classList.add('active'); }
+  return true;
+}
+
+function checkWin(){
+  const allCollected = levelData.targets.every((_,idx)=>collected[idx]===true);
+  if(allCollected && botPos[0]===goalPos[0] && botPos[1]===goalPos[1]){
+    const bonus = Math.max(0, MAX_SLOTS - program.length) * 5;
+    const pts = 100 + bonus;
+    score += pts;
+    $('scoreDisplay').textContent = score;
+    const isLast = currentLevel >= WORLDS[currentWorld].levels.length - 1;
+    showFeedback(true, isLast ? '🏆 ¡Mundo completado!' : '🎉 ¡Reto superado!', isLast ? `Completaste el mundo ${currentWorld}. Esta plantilla puede inspirar nuevas apps para pensamiento matemático en Primera Infancia.` : `+${pts} puntos. El robot cumplió la misión correctamente.`, isLast);
+    spawnConfetti();
+    return true;
+  }
+  return false;
+}
+
+function loseLife(title,msg){
+  lives--;
+  renderLives();
+  if(lives<=0){
+    showFeedback(false, '💀 Fin del juego', 'Perdiste todas las vidas. Vuelve al inicio e intenta una nueva ruta.');
+    setTimeout(()=>{ hideFeedback(); show('intro'); }, 2200);
+  } else {
+    showFeedback(false, title, `${msg} (Vidas restantes: ${lives})`);
+  }
+}
+
+function highlightSlot(i){
+  const el = document.getElementById(`slot-${i}`);
+  if(el){ el.classList.add('executing'); setTimeout(()=>el.classList.remove('executing'), 320); }
+}
+
+function showFeedback(win,title,msg,isWorldEnd=false){
+  $('feedback').classList.add('show');
+  $('fbIcon').textContent = win ? (isWorldEnd ? '🏆' : '🎉') : '😬';
+  $('fbTitle').textContent = title;
+  $('fbMsg').textContent = msg;
+  const next = $('nextBtn');
+  if(win && isWorldEnd){
+    next.textContent = 'Ir al inicio';
+    next.onclick = ()=>{ hideFeedback(); show('intro'); };
+  } else if(win){
+    next.textContent = 'Siguiente nivel';
+    next.onclick = ()=>nextLevel();
+  } else {
+    next.textContent = 'Reintentar';
+    next.onclick = ()=>retryLevel();
+  }
+}
+
+function hideFeedback(){ $('feedback').classList.remove('show'); }
+function nextLevel(){ hideFeedback(); currentLevel++; if(currentLevel>=WORLDS[currentWorld].levels.length){ show('intro'); return; } loadLevel(); }
+function retryLevel(){ hideFeedback(); loadLevel(); }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+function spawnConfetti(){
+  const colors = ['#4ade80','#60a5fa','#fbbf24','#f472b6','#fb923c','#2dd4bf'];
+  for(let i=0;i<56;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = `${Math.random()*100}vw`;
+    piece.style.top = '-20px';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.width = `${6+Math.random()*8}px`;
+    piece.style.height = `${6+Math.random()*8}px`;
+    piece.style.animationDuration = `${1.2 + Math.random()*1.0}s`;
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(), 2300);
+  }
+}
+
+function spawnFloaties(){
+  const symbols = ['1','2','3','△','○','□','★','+','🔵','🟡'];
+  setInterval(()=>{
+    const el = document.createElement('div');
+    el.className = 'floaty';
+    el.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    el.style.left = `${Math.random()*96}vw`;
+    el.style.fontSize = `${20 + Math.random()*24}px`;
+    el.style.animationDuration = `${10 + Math.random()*10}s`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 20000);
+  }, 950);
+}
+spawnFloaties();
+renderLives();
+</script>
+</body>
+</html>
